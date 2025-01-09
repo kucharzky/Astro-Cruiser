@@ -12,7 +12,7 @@ endif()
 project("Astro Cruiser")
 
 # Add source to this project's executable.
-add_executable(AstroCruiser "Astro Cruiser.cpp" "Astro Cruiser.h")
+add_executable(AstroCruiser "Astro Cruiser.cpp" "Astro Cruiser.h" "button.cpp" "button.cpp" "button.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AstroCruiser PROPERTY CXX_STANDARD 20)
@@ -29,3 +29,4 @@ FetchContent_MakeAvailable(raylib)
 
 # Link the raylib library to the AstroCruiser executable.
 target_link_libraries(AstroCruiser PRIVATE raylib)
+file(COPY ${CMAKE_SOURCE_DIR}/graphics DESTINATION ${CMAKE_BINARY_DIR})
