@@ -16,6 +16,7 @@ int main()
     Button startButton{ "graphics/start.png",{500, 400},2 };
     Button exitButton{ "graphics/exit.png",{500,550},2 };*/
     Game game;
+    //Texture2D txture = LoadTexture("textures/asteroid.png");
 
     while (!WindowShouldClose())
     {
@@ -48,6 +49,8 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
         game.Draw();
+		
+        //DrawTextureEx(txture, { 100,100 }, 0, 4, WHITE);
 
 
         EndDrawing();

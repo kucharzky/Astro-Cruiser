@@ -4,13 +4,14 @@ Player::Player()
 {
 	texture = LoadTexture("textures/ship_2.png");
 	sound = LoadSound("sounds/gunshot.wav");
-    position = { static_cast<float>(GetScreenWidth()/2 - texture.width/2), static_cast<float>(GetScreenHeight() - texture.height) };
+    position = { static_cast<float>(GetScreenWidth()/2 - texture.width/2), static_cast<float>(GetScreenHeight() - 1.5*texture.height) };
 	lastActive = 0.0;
 }
 
 Player::~Player()
 {
 	UnloadTexture(texture);
+	UnloadSound(sound);
 }
 
 void Player::MoveL()

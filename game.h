@@ -1,5 +1,6 @@
 #pragma once
 #include "player.h"
+#include "asteroid.h"
 
 class Game {
 public:
@@ -11,4 +12,6 @@ public:
 private:
 	Player spaceship;
 	void OutOfScreen();
+	std::vector<Asteroid> asteroids;
+	std::vector<Asteroid> InitAsteroids();
 };
