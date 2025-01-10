@@ -29,4 +29,5 @@ FetchContent_MakeAvailable(raylib)
 
 # Link the raylib library to the AstroCruiser executable.
 target_link_libraries(AstroCruiser PRIVATE raylib)
-file(COPY ${CMAKE_SOURCE_DIR}/txts DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/sounds DESTINATION ${CMAKE_BINARY_DIR})

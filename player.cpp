@@ -2,7 +2,8 @@
 
 Player::Player()
 {
-	texture = LoadTexture("txts/ship_2.png");
+	texture = LoadTexture("textures/ship_2.png");
+	sound = LoadSound("sounds/gunshot.wav");
     position = { static_cast<float>(GetScreenWidth()/2 - texture.width/2), static_cast<float>(GetScreenHeight() - texture.height) };
 	lastActive = 0.0;
 }
@@ -29,6 +30,7 @@ void Player::Fire()
 	if (GetTime() - lastActive < 0.5) return;
 	projectiles.push_back(Projectile({ position.x + texture.width / 2 - 3, position.y  }, 10));
 	lastActive = GetTime();
+	PlaySound(sound);
 }
 
 void Player::Draw()

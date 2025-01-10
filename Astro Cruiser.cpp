@@ -11,6 +11,7 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "Astro Cruiser : rev 0.1");
     SetTargetFPS(60);
+    InitAudioDevice();
     /*Texture2D background = LoadTexture("graphics/mainlogo.png");
     Button startButton{ "graphics/start.png",{500, 400},2 };
     Button exitButton{ "graphics/exit.png",{500,550},2 };*/
@@ -51,7 +52,7 @@ int main()
 
         EndDrawing();
     }
-
+	CloseAudioDevice();
     CloseWindow();
     return 0;
 }

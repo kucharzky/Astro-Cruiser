@@ -16,4 +16,5 @@ private:
 	Texture2D texture;
 	Vector2 position;
 	float lastActive;
+	Sound sound;
 };

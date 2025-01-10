@@ -2,7 +2,7 @@
 
 Projectile::Projectile(Vector2 position, float speed)
 {
-	texture = LoadTexture("txts/shot.png");
+	texture = LoadTexture("textures/shot.png");
 	this->position = position;
 	this->speed = speed;
 	shot = true;

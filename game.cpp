@@ -35,7 +35,9 @@ void Game::OutOfScreen() // Usuwanie pocisków poza ekranem
 {
 	for (auto i = spaceship.projectiles.begin(); i != spaceship.projectiles.end();)
 	{
-		if (!i->shot) spaceship.projectiles.erase(i);
-		else ++i;
+		if (!i->shot)
+			i = spaceship.projectiles.erase(i);
+		else
+			++i;
 	}
 }
