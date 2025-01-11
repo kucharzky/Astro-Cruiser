@@ -12,7 +12,7 @@ endif()
 project("Astro Cruiser")
 
 # Add source to this project's executable.
-add_executable(AstroCruiser "Astro Cruiser.cpp" "Astro Cruiser.h" "button.cpp" "button.h" "player.h" "player.cpp" "game.h" "game.cpp" "projectile.h" "projectile.cpp" "decay.h" "decay.cpp" "asteroid.h" "asteroid.cpp")
+add_executable(AstroCruiser "Astro Cruiser.cpp" "Astro Cruiser.h" "button.cpp" "button.h" "player.h" "player.cpp" "game.h" "game.cpp" "projectile.h" "projectile.cpp" "decay.h" "decay.cpp" "asteroid.h" "asteroid.cpp" "enemy.h" "enemy.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET AstroCruiser PROPERTY CXX_STANDARD 20)

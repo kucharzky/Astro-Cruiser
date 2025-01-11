@@ -49,8 +49,11 @@ int main()
         BeginDrawing();
         ClearBackground(BLACK);
         game.Draw();
+
 		
         //DrawTextureEx(txture, { 100,100 }, 0, 4, WHITE);
+		
+
 
 
         EndDrawing();

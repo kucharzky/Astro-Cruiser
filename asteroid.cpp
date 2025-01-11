@@ -23,9 +23,9 @@ Asteroid::Asteroid(Vector2 position)
 {
 	this->position = position;
 	
-	for (int i = 0; i < mesh.size(); i++)
+	for (int i{ 0 }; i < mesh.size(); i++)
 	{
-		for (int j = 0; j < mesh[i].size(); j++)
+		for (int j{ 0 }; j < mesh[i].size(); j++)
 		{
 			if (mesh[i][j] == 1)
 			{
