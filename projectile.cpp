@@ -1,12 +1,14 @@
 #include "projectile.h"
 
-Texture2D Projectile::texture = {};
+Texture2D Projectile::textures[2] = {}; // statyczna tablica tekstur
 
-Projectile::Projectile(Vector2 position, float speed)
+Projectile::Projectile(Vector2 position, float speed, bool isPlayerShot)
 {
-	if (texture.id == 0) texture = LoadTexture("textures/shot.png");
+	if (textures[0].id == 0) textures[0] = LoadTexture("textures/shot.png"); // tekstura dla gracza
+	if (textures[1].id == 0) textures[1] = LoadTexture("textures/enemyshot.png"); // tekstura dla wroga
 	this->position = position;
 	this->speed = speed;
+	this->isPlayerShot = isPlayerShot;
 	shot = true;
 }
 
@@ -16,20 +18,37 @@ Projectile::~Projectile()
 
 void Projectile::Draw()
 {
-	if (shot) DrawTextureV(texture, position, WHITE);
+	if (shot) {
+		if (isPlayerShot) {
+			DrawTextureV(textures[0], position, WHITE);
+		}
+		else {
+			DrawTextureV(textures[1], position, WHITE);
+		}
+	}
 }
 
-void Projectile::UnloadTexture()
+void Projectile::UnloadTextures()
 {
-	if (texture.id != 0) {
-		::UnloadTexture(texture); // Use the global UnloadTexture function
-		texture = {};
+	if (textures[0].id != 0) {
+		::UnloadTexture(textures[0]);
+		textures[0] = {};
+	}
+	if (textures[1].id != 0) {
+		::UnloadTexture(textures[1]);
+		textures[1] = {};
 	}
 }
 
 void Projectile::Update()
 {
-	position.y -= speed;
+	if (isPlayerShot) {
+		position.y -= speed; // strzal gracza leci w gore
+	}
+	else {
+		position.y += speed; // strzal wroga leci w dol
+	}
+
 	if (shot)
 	{
 		if (position.y > GetScreenHeight() || position.y < 0) shot = false;

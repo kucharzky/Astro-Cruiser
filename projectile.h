@@ -3,15 +3,15 @@
 class Projectile
 {
 public:
-	Projectile(Vector2 position, float speed);
+	Projectile(Vector2 position, float speed, bool isPlayerShot);
 	~Projectile();
 	void Update();
 	void Draw();
 	bool shot;
-	static void UnloadTexture();
-	static Texture2D texture;
+	static void UnloadTextures();
+	static Texture2D textures[2]; // 0 - pocisk gracza, 1 - pocisk wroga
 private:
-
 	Vector2 position;
 	float speed;
+	bool isPlayerShot; // flaga okreslajaca czy pocisk nalezy do gracza
 };

@@ -29,7 +29,7 @@ void Player::MoveR()
 void Player::Fire()
 {
 	if (GetTime() - lastActive < 0.5) return;
-	projectiles.push_back(Projectile({ position.x + texture.width / 2 - 3, position.y  }, 10));
+	projectiles.push_back(Projectile({ position.x + texture.width / 2 - 3, position.y  }, 10, true));
 	lastActive = GetTime();
 	PlaySound(sound);
 }

@@ -12,9 +12,9 @@ public:
 	Vector2 GetPosition();
 	void Update(int course);
 	static Texture2D textures[3];
+	Vector2 position;
 private:
 	int enemyType;
-	Vector2 position;
 	static bool texturesLoaded;
 
 };

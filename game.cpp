@@ -1,54 +1,115 @@
 #include "game.h"
+#include <random>
 
+std::mt19937 rng(std::random_device{}());
 Game::Game()
 {
 	asteroids = InitAsteroids();
 	enemies = InitEnemies();
 	enemiesCourse = 2;
+	//wartosci domysle
+	enemySpeed = 2;
+	enemyDownSpeed = 4;
+	lastEnemyFire = 0.0;
+	lastUfo = 0.0;
+	std::uniform_int_distribution<int> dist(10, 20);
+	ufoCooldown = dist(rng);
 }
 
 Game::~Game()
 {
 	Enemy::KillEnemy();
-	Projectile::UnloadTexture();
+	Projectile::UnloadTextures();
 }
 
 void Game::Draw()
 {
 	spaceship.Draw();
-
-	for (auto& sp : spaceship.projectiles) sp.Draw();
-
 	for (auto& a : asteroids) a.Draw();
-
 	for (auto& e : enemies) e.Draw();
+	for (auto& p : spaceship.projectiles) p.Draw();
+	for (auto& p : enemiesProjectiles) p.Draw(); // Rysowanie pocisków wrogów
+	ufo.Draw();
 }
 
 void Game::Update()
 {
+	double currentTime = GetTime();
 	for (auto& p : spaceship.projectiles) p.Update();
+	for (int i = 0; i < spaceship.projectiles.size(); i++)
+	{
+		if (!spaceship.projectiles[i].shot)
+		{
+			spaceship.projectiles.erase(spaceship.projectiles.begin() + i);
+			i--;
+		}
+	}
+
+	for (auto& p : enemiesProjectiles) p.Update(); // Uruchomienie metody Update() dla pocisków wrogów
+	for (int i = 0; i < enemiesProjectiles.size(); i++)
+	{
+		if (!enemiesProjectiles[i].shot)
+		{
+			enemiesProjectiles.erase(enemiesProjectiles.begin() + i);
+			i--;
+		}
+	}
+	if (currentTime - lastUfo > ufoCooldown)
+	{
+		ufo.SpawnUFO();
+		lastUfo = GetTime();
+		std::uniform_int_distribution<int> dist(10, 20);
+		ufoCooldown = dist(rng);
+	}
+	EnemyFire();
 	UpdateEnemies();
-	OutOfScreen();
+	//OutOfScreen();
+	ufo.Update();
 }
 
 void Game::Inputs()
 {
 	if (IsKeyDown(KEY_LEFT)) spaceship.MoveL();
 	if (IsKeyDown(KEY_RIGHT)) spaceship.MoveR();
-	//if (IsKeyPressed(KEY_SPACE)) spaceship.Fire();
+	//if (IsKeyPressed(KEY_SPACE)) spaceship.Fire(); - zamiast tego dodalem delay do strzalow
 	if (IsKeyDown(KEY_SPACE)) spaceship.Fire();
 }
 
-void Game::OutOfScreen() // Usuwanie pocisków poza ekranem
+void Game::SetEnemiesSpeed(int speed)
 {
-	for (auto p = spaceship.projectiles.begin(); p != spaceship.projectiles.end();)
-	{
-		if (!p->shot)
-			p = spaceship.projectiles.erase(p);
-		else
-			++p;
-	}
+	this->enemySpeed = speed;
 }
+
+int Game::GetEnemiesSpeed()
+{
+	return enemySpeed;
+}
+
+void Game::SetEnemiesDownSpeed(int speed)
+{
+	this->enemyDownSpeed = speed;
+}
+
+int Game::GetEnemiesDownSpeed()
+{
+	return enemyDownSpeed;
+}
+
+int Game::GetSizeOfEnemies()
+{
+	return enemies.size();
+}
+
+//void Game::OutOfScreen() // usuwanie pocisków poza ekranem
+//{
+//	for (auto p = spaceship.projectiles.begin(); p != spaceship.projectiles.end();)
+//	{
+//		if (!p->shot)
+//			p = spaceship.projectiles.erase(p);
+//		else
+//			++p;
+//	}
+//}
 
 std::vector<Asteroid> Game::InitAsteroids()
 {
@@ -81,23 +142,37 @@ std::vector<Enemy> Game::InitEnemies()
 	return enemies;
 }
 
+void Game::EnemyFire()
+{
+	std::uniform_int_distribution<int> dist(0, GetSizeOfEnemies() - 1);
+    float currentTime = GetTime();
+    if (currentTime - lastEnemyFire >= enemyFireCooldown && enemies.size() > 0) {
+		int random = dist(rng);
+        Enemy& enemy = enemies[random];
+        enemiesProjectiles.push_back(Projectile({ enemy.GetPosition().x + enemy.textures[enemy.GetType() - 1].width / 2 - 3, enemy.GetPosition().y + enemy.textures[enemy.GetType() - 1].height }, 5, false));
+        lastEnemyFire = currentTime;
+    }
+}
+
 void Game::UpdateEnemies()
 {
 	for (auto& e : enemies)
 	{
 		if (e.GetPosition().x + e.textures[e.GetType()-1].width > GetScreenWidth())
 		{
-			enemiesCourse = -2;
+			enemiesCourse = -GetEnemiesSpeed(); // Zmiana kierunku
+			MoveDown();
 		}
-		if (e.GetPosition().x < 0) enemiesCourse = 2;
+		if (e.GetPosition().x < 0) {
+			enemiesCourse = GetEnemiesSpeed();
+			MoveDown();
+		}
 
 		e.Update(enemiesCourse);
 	}
 }
 
-void Game::DownMovement()
+void Game::MoveDown()
 {
-	for (auto& e : enemies) {
-
-	}
+	for (auto& e : enemies) e.position.y += GetEnemiesDownSpeed();
 }
