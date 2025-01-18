@@ -4,11 +4,13 @@ Game::Game()
 {
 	asteroids = InitAsteroids();
 	enemies = InitEnemies();
+	enemiesCourse = 2;
 }
 
 Game::~Game()
 {
-
+	Enemy::KillEnemy();
+	Projectile::UnloadTexture();
 }
 
 void Game::Draw()
@@ -25,6 +27,7 @@ void Game::Draw()
 void Game::Update()
 {
 	for (auto& p : spaceship.projectiles) p.Update();
+	UpdateEnemies();
 	OutOfScreen();
 }
 
@@ -76,4 +79,25 @@ std::vector<Enemy> Game::InitEnemies()
 		}
 	}
 	return enemies;
+}
+
+void Game::UpdateEnemies()
+{
+	for (auto& e : enemies)
+	{
+		if (e.GetPosition().x + e.textures[e.GetType()-1].width > GetScreenWidth())
+		{
+			enemiesCourse = -2;
+		}
+		if (e.GetPosition().x < 0) enemiesCourse = 2;
+
+		e.Update(enemiesCourse);
+	}
+}
+
+void Game::DownMovement()
+{
+	for (auto& e : enemies) {
+
+	}
 }

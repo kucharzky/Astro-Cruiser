@@ -5,12 +5,16 @@ class Enemy
 {
 public:
 	Enemy(int enemyType,Vector2 position);
+	~Enemy();
 	void Draw();
+	static void KillEnemy();
+	int GetType();
+	Vector2 GetPosition();
+	void Update(int course);
+	static Texture2D textures[3];
+private:
 	int enemyType;
 	Vector2 position;
-	Texture2D texture;
-	void Update();
-	int GetType();
-private:
+	static bool texturesLoaded;
 
 };

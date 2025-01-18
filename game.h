@@ -17,4 +17,7 @@ private:
 	std::vector<Asteroid> InitAsteroids();
 	std::vector<Enemy> enemies;
 	std::vector<Enemy> InitEnemies();
+	void UpdateEnemies();
+	void DownMovement();
+	int enemiesCourse;
 };

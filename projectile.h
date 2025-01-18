@@ -8,8 +8,10 @@ public:
 	void Update();
 	void Draw();
 	bool shot;
+	static void UnloadTexture();
+	static Texture2D texture;
 private:
-	Texture2D texture;
+
 	Vector2 position;
 	float speed;
 };

@@ -1,29 +1,49 @@
 #include "enemy.h"
-
+Texture2D Enemy::textures[3] = {};
+bool Enemy::texturesLoaded = false;
+// 
 Enemy::Enemy(int enemyType, Vector2 position)
 {
 	this->enemyType = enemyType;
 	this->position = position;
-	if (enemyType == 1)
+	if (!texturesLoaded)
 	{
-		texture = LoadTexture("textures/alien1.png");
+		textures[0] = LoadTexture("textures/alien1.png");
+		textures[1] = LoadTexture("textures/alien2.png");
+		textures[2] = LoadTexture("textures/alien3.png");
+		texturesLoaded = true;
 	}
-	else if (enemyType == 2)
-	{
-		texture = LoadTexture("textures/alien2.png");
-	}
-	else if (enemyType == 3)
-	{
-		texture = LoadTexture("textures/alien3.png");
-	}
+}
+
+Enemy::~Enemy()
+{
 }
 
 void Enemy::Draw()
 {
-	DrawTextureV(texture, position, WHITE);
+	DrawTextureV(textures[enemyType-1], position, WHITE);
+}
+
+void Enemy::KillEnemy()
+{
+	if (texturesLoaded)
+	{
+		for (auto& t : textures) UnloadTexture(t);
+		texturesLoaded = false;
+	}
 }
 
 int Enemy::GetType()
 {
 	return enemyType;
+}
+
+Vector2 Enemy::GetPosition()
+{
+	return position;
+}
+void Enemy::Update(int course)
+{
+	position.x += course;
+
 }
