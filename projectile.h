@@ -10,6 +10,7 @@ public:
 	bool shot;
 	static void UnloadTextures();
 	static Texture2D textures[2]; // 0 - pocisk gracza, 1 - pocisk wroga
+	Rectangle GetHitbox();
 private:
 	Vector2 position;
 	float speed;

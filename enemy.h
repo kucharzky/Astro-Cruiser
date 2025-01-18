@@ -13,6 +13,7 @@ public:
 	void Update(int course);
 	static Texture2D textures[3];
 	Vector2 position;
+	Rectangle GetHitbox();
 private:
 	int enemyType;
 	static bool texturesLoaded;

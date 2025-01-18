@@ -30,6 +30,12 @@ void UFO::SpawnUFO()
 	spawned = true;
 }
 
+Rectangle UFO::GetHitbox()
+{
+	if(spawned) return { position.x, position.y, float(texture.width), float(texture.height) };
+	else return { 0,0,0,0};
+}
+
 void UFO::Update()
 {
 	if (spawned) {

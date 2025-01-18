@@ -14,6 +14,11 @@ Player::~Player()
 	UnloadSound(sound);
 }
 
+Rectangle Player::GetHitbox()
+{
+	return { position.x, position.y, float(texture.width), float(texture.height) };
+}
+
 void Player::MoveL()
 {
 	position.x -= 5;	

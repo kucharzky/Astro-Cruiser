@@ -10,6 +10,7 @@ public:
 	void Update();
 	void SpawnUFO();
 	bool spawned;
+	Rectangle GetHitbox();
 private:
 	Texture2D texture;
 	Vector2 position;

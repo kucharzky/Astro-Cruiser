@@ -24,6 +24,7 @@ private:
 	std::vector<Enemy> enemies;
 	std::vector<Enemy> InitEnemies();
 	std::vector<Projectile> enemiesProjectiles;
+	void CollisionsCheck();
 	void EnemyFire();
 	constexpr static float enemyFireCooldown{ 0.5 };
 	float lastEnemyFire;
@@ -35,4 +36,5 @@ private:
 	UFO ufo;
 	float ufoCooldown;
 	float lastUfo;
+
 };

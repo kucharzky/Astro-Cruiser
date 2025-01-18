@@ -7,6 +7,7 @@ class Player
 public:
 	Player();
 	~Player();
+	Rectangle GetHitbox();
 	void MoveL();
 	void MoveR();
 	void Fire();

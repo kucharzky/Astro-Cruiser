@@ -40,6 +40,11 @@ void Projectile::UnloadTextures()
 	}
 }
 
+Rectangle Projectile::GetHitbox()
+{
+	return { position.x, position.y, float(textures[0].width), float(textures[0].height) };
+}
+
 void Projectile::Update()
 {
 	if (isPlayerShot) {

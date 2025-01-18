@@ -47,3 +47,8 @@ void Enemy::Update(int course)
 	position.x += course;
 
 }
+
+Rectangle Enemy::GetHitbox()
+{
+	return { position.x, position.y, float(textures[enemyType - 1].width), float(textures[enemyType - 1].height) };
+}

@@ -1,5 +1,6 @@
 #include "game.h"
 #include <random>
+#include <iostream>
 
 std::mt19937 rng(std::random_device{}());
 Game::Game()
@@ -65,6 +66,7 @@ void Game::Update()
 	UpdateEnemies();
 	//OutOfScreen();
 	ufo.Update();
+	CollisionsCheck();
 }
 
 void Game::Inputs()
@@ -140,6 +142,88 @@ std::vector<Enemy> Game::InitEnemies()
 		}
 	}
 	return enemies;
+}
+
+void Game::CollisionsCheck()
+{
+	// KOLIZJE PRZECIWNIKOW Z GRACZEM
+	for (auto& ep : enemiesProjectiles)
+	{
+		if (CheckCollisionRecs(ep.GetHitbox(), spaceship.GetHitbox()))
+		{
+			ep.shot = false;
+			std::cout << "kolizja ze strzalem wroga" << std::endl;
+		}
+		for (auto& a : asteroids) // Kolizje strzalow z asteroidami
+		{
+			auto i = a.decays.begin();
+			while (i != a.decays.end())
+			{
+				if (CheckCollisionRecs(ep.GetHitbox(), i->GetHitbox()))
+				{
+					i = a.decays.erase(i);
+					ep.shot = false;
+				}
+				else ++i;
+
+			}
+		}
+	}
+	for (auto& e : enemies)
+	{
+		for (auto& a : asteroids) // Kolizje przeciwnikow z asteroidami
+		{
+			auto i = a.decays.begin();
+			while (i != a.decays.end())
+			{
+				if (CheckCollisionRecs(e.GetHitbox(), i->GetHitbox())) i = a.decays.erase(i);
+				else ++i;
+			}
+		}
+		if (CheckCollisionRecs(e.GetHitbox(), spaceship.GetHitbox())) // Kolizje przeciwnikow z graczem
+		{
+			std::cout << "bezposrednia kolizja z wrogiem" << std::endl;
+		}
+	}
+	// KOLIZJE GRACZA Z PRZECIWNIKAMI
+    for (auto& sp : spaceship.projectiles)
+    {
+        auto i = enemies.begin();
+        while (i != enemies.end())
+        {
+            if (CheckCollisionRecs(sp.GetHitbox(), i->GetHitbox()))
+            {
+                i = enemies.erase(i);
+                sp.shot = false;
+            }
+            else
+            {
+                ++i;
+            }
+        }
+		for (auto& a : asteroids) // Kolizje strzalow z asteroidami
+        {
+            auto i = a.decays.begin();
+            while (i != a.decays.end())
+            {
+                if (CheckCollisionRecs(sp.GetHitbox(), i->GetHitbox()))
+                {
+                    i = a.decays.erase(i);
+                    sp.shot = false;
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+        }
+        if (CheckCollisionRecs(ufo.GetHitbox(), sp.GetHitbox()))
+        {
+            ufo.spawned = false;
+            sp.shot = false;
+        }
+    }
+	
 }
 
 void Game::EnemyFire()
