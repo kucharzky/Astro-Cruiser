@@ -23,11 +23,16 @@ include(FetchContent)
 FetchContent_Declare(
   raylib
   GIT_REPOSITORY https://github.com/raysan5/raylib.git
-  GIT_SHALLOW 1
+  GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(raylib)
 
 # Link the raylib library to the AstroCruiser executable.
 target_link_libraries(AstroCruiser PRIVATE raylib)
-file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY ${CMAKE_SOURCE_DIR}/sounds DESTINATION ${CMAKE_BINARY_DIR})
+if(EXISTS ${CMAKE_SOURCE_DIR}/textures)
+  file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/sounds)
+  file(COPY ${CMAKE_SOURCE_DIR}/sounds DESTINATION ${CMAKE_BINARY_DIR})
+endif()

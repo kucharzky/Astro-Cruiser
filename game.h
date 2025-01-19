@@ -15,9 +15,17 @@ public:
 	int GetEnemiesSpeed();
 	void SetEnemiesDownSpeed(int speed);
 	int GetEnemiesDownSpeed();
-	int GetSizeOfEnemies();
+	size_t GetSizeOfEnemies();
+	void SetLives(int lives);
+	int GetLives();
+	bool isGameRunning;
 private:
-	Player spaceship;
+	Player cruiser;
+	int lives;
+	void DeathScreen();
+	void ClearObjects();
+	void InitGame();
+	Texture2D explosion;
 	//void OutOfScreen();
 	std::vector<Asteroid> asteroids;
 	std::vector<Asteroid> InitAsteroids();
@@ -35,6 +43,5 @@ private:
 	int enemyDownSpeed;
 	UFO ufo;
 	float ufoCooldown;
-	float lastUfo;
-
+	double lastUfo;
 };

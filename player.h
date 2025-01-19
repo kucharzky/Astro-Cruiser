@@ -13,6 +13,8 @@ public:
 	void Fire();
 	void Draw();
 	std::vector<Projectile> projectiles;
+	void UnloadResources();
+	void ResetPlayer();
 private:
 	Texture2D texture;
 	Vector2 position;

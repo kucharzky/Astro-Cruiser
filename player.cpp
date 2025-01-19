@@ -4,14 +4,13 @@ Player::Player()
 {
 	texture = LoadTexture("textures/ship_2.png");
 	sound = LoadSound("sounds/gunshot.wav");
-    position = { static_cast<float>(GetScreenWidth()/2 - texture.width/2), static_cast<float>(GetScreenHeight() - 1.5*texture.height) };
+    position = { static_cast<float>(GetScreenWidth()/2 - texture.width/2), static_cast<float>(GetScreenHeight() - 1.5*texture.height-30) };
 	lastActive = 0.0;
 }
 
 Player::~Player()
 {
-	UnloadTexture(texture);
-	UnloadSound(sound);
+	
 }
 
 Rectangle Player::GetHitbox()
@@ -42,4 +41,16 @@ void Player::Fire()
 void Player::Draw()
 {
 	DrawTextureV(texture, position, WHITE);
+}
+
+void Player::UnloadResources()
+{
+	UnloadTexture(texture);
+	UnloadSound(sound);
+}
+
+void Player::ResetPlayer()
+{
+	position = { static_cast<float>(GetScreenWidth() / 2 - texture.width / 2), static_cast<float>(GetScreenHeight() - 1.5 * texture.height-30) };
+	projectiles.clear();
 }

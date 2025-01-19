@@ -5,76 +5,92 @@
 std::mt19937 rng(std::random_device{}());
 Game::Game()
 {
+	explosion = LoadTexture("textures/explosion2.png");
 	asteroids = InitAsteroids();
 	enemies = InitEnemies();
 	enemiesCourse = 2;
-	//wartosci domysle
+	//wartosci domyslne
+	lives = 3;
 	enemySpeed = 2;
 	enemyDownSpeed = 4;
 	lastEnemyFire = 0.0;
 	lastUfo = 0.0;
-	std::uniform_int_distribution<int> dist(10, 20);
+	std::uniform_int_distribution<> dist(10, 20);
 	ufoCooldown = dist(rng);
+	isGameRunning = true;
 }
 
 Game::~Game()
 {
 	Enemy::KillEnemy();
 	Projectile::UnloadTextures();
+	ufo.UnloadTexture();
+	cruiser.UnloadResources();
+	::UnloadTexture(explosion);
 }
 
 void Game::Draw()
 {
-	spaceship.Draw();
+	cruiser.Draw();
 	for (auto& a : asteroids) a.Draw();
 	for (auto& e : enemies) e.Draw();
-	for (auto& p : spaceship.projectiles) p.Draw();
-	for (auto& p : enemiesProjectiles) p.Draw(); // Rysowanie pocisków wrogów
+	for (auto& cp : cruiser.projectiles) cp.Draw();
+	for (auto& p : enemiesProjectiles) p.Draw();
 	ufo.Draw();
 }
 
 void Game::Update()
 {
-	double currentTime = GetTime();
-	for (auto& p : spaceship.projectiles) p.Update();
-	for (int i = 0; i < spaceship.projectiles.size(); i++)
-	{
-		if (!spaceship.projectiles[i].shot)
+	if (isGameRunning) {
+		double currentTime = GetTime();
+		for (auto& cp : cruiser.projectiles) cp.Update();
+		for (int i = 0; i < cruiser.projectiles.size(); i++)
 		{
-			spaceship.projectiles.erase(spaceship.projectiles.begin() + i);
-			i--;
+			if (!cruiser.projectiles[i].shot)
+			{
+				cruiser.projectiles.erase(cruiser.projectiles.begin() + i);
+				i--;
+			}
 		}
-	}
 
-	for (auto& p : enemiesProjectiles) p.Update(); // Uruchomienie metody Update() dla pocisków wrogów
-	for (int i = 0; i < enemiesProjectiles.size(); i++)
-	{
-		if (!enemiesProjectiles[i].shot)
+		for (auto& ep : enemiesProjectiles) ep.Update(); // Uruchomienie metody Update() dla pocisków wrogów
+		for (int i = 0; i < enemiesProjectiles.size(); i++)
 		{
-			enemiesProjectiles.erase(enemiesProjectiles.begin() + i);
-			i--;
+			if (!enemiesProjectiles[i].shot)
+			{
+				enemiesProjectiles.erase(enemiesProjectiles.begin() + i);
+				i--;
+			}
+		}
+		if (currentTime - lastUfo > ufoCooldown)
+		{
+			ufo.SpawnUFO();
+			lastUfo = GetTime();
+			std::uniform_int_distribution<> dist(10, 20);
+			ufoCooldown = dist(rng);
+		}
+		EnemyFire();
+		UpdateEnemies();
+		//OutOfScreen();
+		ufo.Update();
+		CollisionsCheck();
+	}
+	else {
+		if (IsKeyPressed(KEY_ENTER)) {
+			ClearObjects();
+			InitGame();
 		}
 	}
-	if (currentTime - lastUfo > ufoCooldown)
-	{
-		ufo.SpawnUFO();
-		lastUfo = GetTime();
-		std::uniform_int_distribution<int> dist(10, 20);
-		ufoCooldown = dist(rng);
-	}
-	EnemyFire();
-	UpdateEnemies();
-	//OutOfScreen();
-	ufo.Update();
-	CollisionsCheck();
 }
 
 void Game::Inputs()
 {
-	if (IsKeyDown(KEY_LEFT)) spaceship.MoveL();
-	if (IsKeyDown(KEY_RIGHT)) spaceship.MoveR();
-	//if (IsKeyPressed(KEY_SPACE)) spaceship.Fire(); - zamiast tego dodalem delay do strzalow
-	if (IsKeyDown(KEY_SPACE)) spaceship.Fire();
+	if (isGameRunning) {
+		if (IsKeyDown(KEY_LEFT)) cruiser.MoveL();
+		if (IsKeyDown(KEY_RIGHT)) cruiser.MoveR();
+		//if (IsKeyPressed(KEY_SPACE)) spaceship.Fire(); - zamiast tego dodalem delay do strzalow
+		if (IsKeyDown(KEY_SPACE)) cruiser.Fire();
+	}
 }
 
 void Game::SetEnemiesSpeed(int speed)
@@ -97,9 +113,48 @@ int Game::GetEnemiesDownSpeed()
 	return enemyDownSpeed;
 }
 
-int Game::GetSizeOfEnemies()
+size_t Game::GetSizeOfEnemies()
 {
-	return enemies.size();
+	return size_t(enemies.size());
+}
+
+void Game::SetLives(int lives)
+{
+	this->lives = lives;
+}
+
+int Game::GetLives()
+{
+	return lives;
+}
+
+void Game::DeathScreen()
+{
+	ClearBackground({ 0,0,0,135 });
+	isGameRunning = false;
+	// tutaj bedzie ekran smierci
+	
+}
+
+void Game::ClearObjects()
+{
+	cruiser.ResetPlayer();
+	enemies.clear();
+	enemiesProjectiles.clear();
+	asteroids.clear();
+}
+
+void Game::InitGame()
+{
+	asteroids = InitAsteroids();
+	enemies = InitEnemies();
+	enemiesCourse = 2;
+	lives = 3;
+	lastEnemyFire = 0.0;
+	lastUfo = 0.0;
+	std::uniform_int_distribution<> dist(10, 20);
+	ufoCooldown = dist(rng);
+	isGameRunning = true;
 }
 
 //void Game::OutOfScreen() // usuwanie pocisków poza ekranem
@@ -115,7 +170,7 @@ int Game::GetSizeOfEnemies()
 
 std::vector<Asteroid> Game::InitAsteroids()
 {
-	int asteroidWidth = Asteroid::mesh[0].size() * 4;
+	size_t asteroidWidth = Asteroid::mesh[0].size() * 4;
 	float jump2next = (GetScreenWidth() - (asteroidWidth*5)) / 6;
 	for (int i{ 0 }; i < 5; i++)
 	{
@@ -149,10 +204,12 @@ void Game::CollisionsCheck()
 	// KOLIZJE PRZECIWNIKOW Z GRACZEM
 	for (auto& ep : enemiesProjectiles)
 	{
-		if (CheckCollisionRecs(ep.GetHitbox(), spaceship.GetHitbox()))
+		if (CheckCollisionRecs(ep.GetHitbox(), cruiser.GetHitbox())) // Kolizje strzalow wrogow z graczem
 		{
 			ep.shot = false;
+			lives--;
 			std::cout << "kolizja ze strzalem wroga" << std::endl;
+			if (lives == 0) DeathScreen();
 		}
 		for (auto& a : asteroids) // Kolizje strzalow z asteroidami
 		{
@@ -180,56 +237,61 @@ void Game::CollisionsCheck()
 				else ++i;
 			}
 		}
-		if (CheckCollisionRecs(e.GetHitbox(), spaceship.GetHitbox())) // Kolizje przeciwnikow z graczem
+		if (CheckCollisionRecs(e.GetHitbox(), cruiser.GetHitbox())) // Kolizje przeciwnikow z graczem
 		{
+			DeathScreen();
 			std::cout << "bezposrednia kolizja z wrogiem" << std::endl;
 		}
 	}
 	// KOLIZJE GRACZA Z PRZECIWNIKAMI
-    for (auto& sp : spaceship.projectiles)
-    {
-        auto i = enemies.begin();
-        while (i != enemies.end())
-        {
-            if (CheckCollisionRecs(sp.GetHitbox(), i->GetHitbox()))
-            {
-                i = enemies.erase(i);
-                sp.shot = false;
-            }
-            else
-            {
-                ++i;
-            }
-        }
+	for (auto& cp : cruiser.projectiles)
+	{
+		auto i = enemies.begin();
+		while (i != enemies.end())
+		{
+			if (CheckCollisionRecs(cp.GetHitbox(), i->GetHitbox()))
+			{
+				DrawTextureV(explosion, {cp.GetHitbox().x-15,cp.GetHitbox().y}, WHITE);
+				i = enemies.erase(i);
+				//PlaySound(sound);
+				cp.shot = false;
+			}
+			else
+			{
+				++i;
+			}
+		}
 		for (auto& a : asteroids) // Kolizje strzalow z asteroidami
-        {
-            auto i = a.decays.begin();
-            while (i != a.decays.end())
-            {
-                if (CheckCollisionRecs(sp.GetHitbox(), i->GetHitbox()))
-                {
-                    i = a.decays.erase(i);
-                    sp.shot = false;
-                }
-                else
-                {
-                    ++i;
-                }
-            }
-        }
-        if (CheckCollisionRecs(ufo.GetHitbox(), sp.GetHitbox()))
-        {
-            ufo.spawned = false;
-            sp.shot = false;
-        }
-    }
-	
+		{
+			auto i = a.decays.begin();
+			while (i != a.decays.end())
+			{
+				if (CheckCollisionRecs(cp.GetHitbox(), i->GetHitbox()))
+				{
+					i = a.decays.erase(i);
+					cp.shot = false;
+				}
+				else
+				{
+					++i;
+				}
+			}
+		}
+		if (CheckCollisionRecs(ufo.GetHitbox(), cp.GetHitbox()))
+		{
+			DrawTextureV(explosion, { cp.GetHitbox().x - 15,cp.GetHitbox().y }, WHITE);
+			ufo.spawned = false;
+			//PlaySound(sound);
+			cp.shot = false;
+		}
+	}
+
 }
 
 void Game::EnemyFire()
 {
 	std::uniform_int_distribution<int> dist(0, GetSizeOfEnemies() - 1);
-    float currentTime = GetTime();
+    double currentTime = GetTime();
     if (currentTime - lastEnemyFire >= enemyFireCooldown && enemies.size() > 0) {
 		int random = dist(rng);
         Enemy& enemy = enemies[random];
@@ -242,7 +304,7 @@ void Game::UpdateEnemies()
 {
 	for (auto& e : enemies)
 	{
-		if (e.GetPosition().x + e.textures[e.GetType()-1].width > GetScreenWidth())
+		if (e.GetPosition().x + e.textures[e.GetType() - 1].width > GetScreenWidth())
 		{
 			enemiesCourse = -GetEnemiesSpeed(); // Zmiana kierunku
 			MoveDown();

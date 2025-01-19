@@ -56,6 +56,6 @@ void Projectile::Update()
 
 	if (shot)
 	{
-		if (position.y > GetScreenHeight() || position.y < 0) shot = false;
+		if (position.y > GetScreenHeight()-60 || position.y < 0) shot = false;
 	}
 }

@@ -8,8 +8,10 @@
 int main()
 {
 
-
-    InitWindow(screenWidth, screenHeight, "Astro Cruiser : rev 0.1");
+    int offset = 50;
+    InitWindow(screenWidth, screenHeight+offset, "Astro Cruiser : rev 0.2");
+    Font spaceFont = LoadFontEx("textures/SpaceMadness.ttf", 64, 0, 0);
+    Texture2D heartSymbol = LoadTexture("textures/heart.png");
     SetTargetFPS(60);
     InitAudioDevice();
     /*Texture2D background = LoadTexture("graphics/mainlogo.png");
@@ -48,6 +50,17 @@ int main()
         // Rysowanie
         BeginDrawing();
         ClearBackground(BLACK);
+        DrawLineEx({ 0,50 }, { screenWidth,50 }, 5, BROWN);
+		DrawLineEx({ 0,screenHeight }, { screenWidth,screenHeight }, 5, BROWN);
+        if (game.isGameRunning)
+            DrawTextEx(spaceFont, "WAVE CLEARED:1", { screenWidth - 350,screenHeight + 5 }, 34, 2, BROWN);
+        else {
+            DrawTextEx(spaceFont, "GAME OVER", { screenWidth / 4 + 20,screenHeight / 2 + 50 }, 100, 2, RED);
+            DrawTextEx(spaceFont, "PRESS ENTER TO RESTART", { screenWidth / 4 + 20,screenHeight / 2 + 150 }, 50, 2, RED);
+        }
+        for (int i{ 0 }; i < game.GetLives();i++) {
+            DrawTextureEx(heartSymbol, {50.0f + (50.0f * i), static_cast<float>(screenHeight) + 4.0f}, 0.0f, 4.0f, WHITE);
+        }
         game.Draw();
 
 		

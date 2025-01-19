@@ -9,7 +9,7 @@ UFO::UFO()
 
 UFO::~UFO()
 {
-	UnloadTexture(texture);
+
 }
 
 
@@ -24,7 +24,7 @@ void UFO::SpawnUFO()
 		speed = 3;
 	}
 	else {
-		position.x = GetScreenWidth() - texture.width;
+		position.x = int(GetScreenWidth()) - texture.width;
 		speed = -3;
 	}
 	spawned = true;
@@ -34,6 +34,16 @@ Rectangle UFO::GetHitbox()
 {
 	if(spawned) return { position.x, position.y, float(texture.width), float(texture.height) };
 	else return { 0,0,0,0};
+}
+
+Vector2 UFO::GetPosition()
+{
+	return position;
+}
+
+void UFO::UnloadTexture()
+{
+	::UnloadTexture(texture);
 }
 
 void UFO::Update()
