@@ -10,4 +10,3 @@ Kroki wykonywania:
 8. death screen
 9. punktacja oraz najwyższy wynik
 10. tablica wynikow
-11. dzwieki
