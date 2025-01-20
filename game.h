@@ -3,6 +3,17 @@
 #include "asteroid.h"
 #include "enemy.h"
 #include "ufo.h"
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+#include <algorithm>
+#include <iostream>
+
+void SaveScore(int score);
+std::vector<int> LoadScores();
+int GetHighScore();
 
 class Game {
 public:
@@ -21,6 +32,8 @@ public:
 	bool isGameRunning;
 	int playerScore;
 	int waveCounter;
+	bool isPaused;
+	void TogglePause();
 private:
 	Player cruiser;
 	int lives;
@@ -47,6 +60,7 @@ private:
 	bool isImmune;
 	double immunityTime;
 	const double immunityDuration{ 2.0 };
-	const float barrierRadius = 50.0f;
+	const float barrierRadius = 40.0f;
 	const Color barrierColor = { 175,238,238,128 };
+	
 };

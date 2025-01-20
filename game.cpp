@@ -1,6 +1,52 @@
 #include "game.h"
-#include <random>
-#include <iostream>
+
+void SaveScore(int score)
+{
+	std::filesystem::create_directory("saves"); // Ensure the directory exists
+	std::ofstream file("saves/scores.txt", std::ios::app);
+	if (file.is_open())
+	{
+		file << score << std::endl;
+		file.close();
+	}
+	else
+	{
+		std::cerr << "Unable to open file for writing scores." << std::endl;
+	}
+}
+
+std::vector<int> LoadScores()
+{
+	std::vector<int> scores;
+	std::ifstream file("saves/scores.txt");
+	if (file.is_open())
+	{
+		std::string line;
+		while (std::getline(file, line))
+		{
+			std::stringstream ss(line);
+			int score;
+			ss >> score;
+			scores.push_back(score);
+		}
+		file.close();
+	}
+	else
+	{
+		std::cerr << "Unable to open file for reading scores." << std::endl;
+	}
+	return scores;
+}
+
+int GetHighScore()
+{
+	std::vector<int> scores = LoadScores();
+	if (!scores.empty())
+	{
+		return *std::max_element(scores.begin(), scores.end());
+	}
+	return 0; // Return 0 if no scores are found
+}
 
 std::mt19937 rng(std::random_device{}());
 Game::Game()
@@ -22,6 +68,7 @@ Game::Game()
 	isGameRunning = true;
 	isImmune = false;
 	immunityTime = 0.0;
+	isPaused = false;
 }
 
 Game::~Game()
@@ -46,6 +93,7 @@ void Game::Draw()
 
 void Game::Update()
 {
+	if (isPaused)return;
 	if (isGameRunning) {
 		double currentTime = GetTime();
 		if (isImmune && (currentTime - immunityTime >= immunityDuration)) {
@@ -100,9 +148,10 @@ void Game::Update()
 
 void Game::Inputs()
 {
-	if (isGameRunning) {
-		if (IsKeyDown(KEY_LEFT)) cruiser.MoveL();
-		if (IsKeyDown(KEY_RIGHT)) cruiser.MoveR();
+	if (IsKeyPressed(KEY_P)) TogglePause();
+	if (isGameRunning&& !isPaused) {
+		if (IsKeyDown(KEY_A)) cruiser.MoveL();
+		if (IsKeyDown(KEY_D)) cruiser.MoveR();
 		//if (IsKeyPressed(KEY_SPACE)) spaceship.Fire(); - zamiast tego dodalem delay do strzalow
 		if (IsKeyDown(KEY_SPACE)) cruiser.Fire();
 	}
@@ -143,12 +192,19 @@ int Game::GetLives()
 	return lives;
 }
 
+void Game::TogglePause()
+{
+	isPaused = !isPaused;
+}
+
 void Game::DeathScreen()
 {
-	ClearBackground({ 0,0,0,135 });
+	SaveScore(playerScore); // Save the current score
+	int highScore = GetHighScore(); // Get the high score
 	isGameRunning = false;
 	// tutaj bedzie ekran smierci
-	
+	std::cout << "Game Over! Your score: " << playerScore << std::endl;
+	std::cout << "High Score: " << highScore << std::endl;
 }
 
 void Game::ClearObjects()

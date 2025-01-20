@@ -51,24 +51,30 @@ int main()
         // Rysowanie
         BeginDrawing();
         ClearBackground(BLACK);
-        //DrawRectangleRounded({ screenWidth / 2-125,screenHeight,250,100 }, 5, 0, BROWN);
+        game.Draw();
+        DrawTextEx(spaceFont, ("SCORE:" + std::to_string(game.playerScore)).c_str(), { 10,10 }, 34, 2, BROWN);
         DrawLineEx({ 0,50 }, { screenWidth,50 }, 5, BROWN);
-		//DrawLineEx({ 0,screenHeight }, { screenWidth,screenHeight }, 5, BROWN);
         if (game.isGameRunning)
             DrawTextEx(spaceFont, ("WAVE CLEARED:" + std::to_string(game.waveCounter)).c_str(), {screenWidth - 350,10}, 34, 2, BROWN);
         else {
-            DrawTextEx(spaceFont, "GAME OVER", { screenWidth / 4 + 20,screenHeight / 2 + 50 }, 100, 2, RED);
-            DrawTextEx(spaceFont, "PRESS ENTER TO RESTART", { screenWidth / 4 + 20,screenHeight / 2 + 150 }, 50, 2, RED);
+            DrawRectangle(0, 0, screenWidth, screenHeight + offset, { 0, 0, 0, 200 });
+            DrawTextEx(spaceFont, "GAME OVER", { screenWidth / 4-80,screenHeight / 4 }, 150, 1, YELLOW);
+            DrawTextEx(spaceFont, "PRESS ENTER TO RESTART", { screenWidth / 4-30,screenHeight / 2}, 50, 2, RED);
+            DrawTextEx(spaceFont, ("HIGHSCORE:"+std::to_string(GetHighScore())).c_str(), {screenWidth / 4+80,screenHeight / 2 + 100}, 50, 2, RED);
+        }
+        if (game.isPaused) {
+            DrawRectangle(0, 0, screenWidth, screenHeight + offset, { 0, 0, 0, 200 });
+            DrawTextEx(spaceFont, "PAUSED", { screenWidth / 2 - 100, screenHeight / 2 }, 50, 2, YELLOW);
         }
         for (int i{ 0 }; i < game.GetLives();i++) {
             DrawTextureEx(heartSymbol, {screenWidth/2 - 78.0f + (50.0f * i), static_cast<float>(screenHeight) + 3.0f}, 0.0f, 4.0f, WHITE);
         }
 
 
-        game.Draw();
+        //game.Draw();
 
             //DrawTextureEx(txture, { 100,100 }, 0, 4, WHITE);
-        DrawTextEx(spaceFont, ("SCORE:" + std::to_string(game.playerScore)).c_str(), {10,10}, 34, 2, BROWN);
+        
 
 
 

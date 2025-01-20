@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "raylib.h"
+#include <random>
 
 // TODO: Reference additional headers your program requires here.
 constexpr int screenWidth = 1280;
