@@ -10,4 +10,9 @@ Kroki wykonywania:
 8. death screen
 9. punktacja oraz najwyższy wynik
 10. tablica wynikow
-11. dzwieki
+
+Czcionka:
+"Space Madness" by Rose Frye
+Licensed under Creative Commons: By Attribution 4.0 International
+http://creativecommons.org/licenses/by/4.0/
+Źródło: https://modernmodron.itch.io/space-madness
