@@ -2,16 +2,12 @@
 
 void SaveScore(int score)
 {
-	std::filesystem::create_directory("saves"); // Ensure the directory exists
+	std::filesystem::create_directory("saves");// sprawdzanie czy lokalizacja istnitej i tworzenie gdy nie ma
 	std::ofstream file("saves/scores.txt", std::ios::app);
 	if (file.is_open())
 	{
 		file << score << std::endl;
 		file.close();
-	}
-	else
-	{
-		std::cerr << "Unable to open file for writing scores." << std::endl;
 	}
 }
 
@@ -31,10 +27,6 @@ std::vector<int> LoadScores()
 		}
 		file.close();
 	}
-	else
-	{
-		std::cerr << "Unable to open file for reading scores." << std::endl;
-	}
 	return scores;
 }
 
@@ -43,14 +35,22 @@ int GetHighScore()
 	std::vector<int> scores = LoadScores();
 	if (!scores.empty())
 	{
-		return *std::max_element(scores.begin(), scores.end());
+		return *std::max_element(scores.begin(), scores.end()); // sortowanie najwyzszych wynikow
 	}
-	return 0; // Return 0 if no scores are found
+	return 0; // zwraca 0 gdy nie ma zadnych wynikow
 }
 
 std::mt19937 rng(std::random_device{}());
 Game::Game()
 {
+	mainMenuMusic = LoadMusicStream("sounds/main_menu_music.wav");
+	SetMusicVolume(mainMenuMusic, 0.1);
+	gameplayMusic = LoadMusicStream("sounds/gameplay.wav");
+	SetMusicVolume(gameplayMusic, 0.1);
+	explosionSound = LoadSound("sounds/destroy.wav");
+	SetSoundVolume(explosionSound, 0.1);
+	PlayMusicStream(mainMenuMusic);
+	PlayMusicStream(gameplayMusic);
 	explosion = LoadTexture("textures/explosion2.png");
 	asteroids = InitAsteroids();
 	enemies = InitEnemies();
@@ -78,6 +78,9 @@ Game::~Game()
 	ufo.UnloadTexture();
 	cruiser.UnloadResources();
 	::UnloadTexture(explosion);
+	UnloadMusicStream(mainMenuMusic);
+	UnloadMusicStream(gameplayMusic);
+	UnloadSound(explosionSound);
 }
 
 void Game::Draw()
@@ -95,6 +98,7 @@ void Game::Update()
 {
 	if (isPaused)return;
 	if (isGameRunning) {
+		
 		double currentTime = GetTime();
 		if (isImmune && (currentTime - immunityTime >= immunityDuration)) {
 			isImmune = false;
@@ -328,6 +332,7 @@ void Game::CollisionsCheck()
 		{
 			if (CheckCollisionRecs(cp.GetHitbox(), i->GetHitbox()))
 			{
+				PlaySound(explosionSound);
 				if (i->GetType() == 1) playerScore += 10;
 				if (i->GetType() == 2) playerScore += 20;
 				if (i->GetType() == 3) playerScore += 30;
@@ -360,6 +365,7 @@ void Game::CollisionsCheck()
 		if (CheckCollisionRecs(ufo.GetHitbox(), cp.GetHitbox()))
 		{
 			DrawTextureV(explosion, { cp.GetHitbox().x - 15,cp.GetHitbox().y }, WHITE);
+			PlaySound(explosionSound);
 			ufo.spawned = false;
 			//PlaySound(sound);
 			cp.shot = false;

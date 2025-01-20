@@ -34,6 +34,8 @@ public:
 	int waveCounter;
 	bool isPaused;
 	void TogglePause();
+	Music mainMenuMusic;
+	Music gameplayMusic;
 private:
 	Player cruiser;
 	int lives;
@@ -41,6 +43,7 @@ private:
 	void ClearObjects();
 	void InitGame();
 	Texture2D explosion;
+	Sound explosionSound;
 	std::vector<Asteroid> asteroids;
 	std::vector<Asteroid> InitAsteroids();
 	std::vector<Enemy> enemies;

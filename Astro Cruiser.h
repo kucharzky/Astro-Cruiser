@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "raylib.h"
+#include "button.h"
 #include <random>
 
 // TODO: Reference additional headers your program requires here.
