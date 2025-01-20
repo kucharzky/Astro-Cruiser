@@ -18,6 +18,11 @@ Rectangle Player::GetHitbox()
 	return { position.x, position.y, float(texture.width), float(texture.height) };
 }
 
+Vector2 Player::GetPosition()
+{
+	return position;
+}
+
 void Player::MoveL()
 {
 	position.x -= 5;	
@@ -53,4 +58,9 @@ void Player::ResetPlayer()
 {
 	position = { static_cast<float>(GetScreenWidth() / 2 - texture.width / 2), static_cast<float>(GetScreenHeight() - 1.5 * texture.height-30) };
 	projectiles.clear();
+}
+
+Texture2D Player::GetTexture()
+{
+	return texture;
 }

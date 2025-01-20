@@ -3,6 +3,7 @@
 
 #include "Astro Cruiser.h"
 #include "game.h"
+#include <string>
 
 
 int main()
@@ -50,22 +51,24 @@ int main()
         // Rysowanie
         BeginDrawing();
         ClearBackground(BLACK);
+        //DrawRectangleRounded({ screenWidth / 2-125,screenHeight,250,100 }, 5, 0, BROWN);
         DrawLineEx({ 0,50 }, { screenWidth,50 }, 5, BROWN);
-		DrawLineEx({ 0,screenHeight }, { screenWidth,screenHeight }, 5, BROWN);
+		//DrawLineEx({ 0,screenHeight }, { screenWidth,screenHeight }, 5, BROWN);
         if (game.isGameRunning)
-            DrawTextEx(spaceFont, "WAVE CLEARED:1", { screenWidth - 350,screenHeight + 5 }, 34, 2, BROWN);
+            DrawTextEx(spaceFont, ("WAVE CLEARED:" + std::to_string(game.waveCounter)).c_str(), {screenWidth - 350,10}, 34, 2, BROWN);
         else {
             DrawTextEx(spaceFont, "GAME OVER", { screenWidth / 4 + 20,screenHeight / 2 + 50 }, 100, 2, RED);
             DrawTextEx(spaceFont, "PRESS ENTER TO RESTART", { screenWidth / 4 + 20,screenHeight / 2 + 150 }, 50, 2, RED);
         }
         for (int i{ 0 }; i < game.GetLives();i++) {
-            DrawTextureEx(heartSymbol, {50.0f + (50.0f * i), static_cast<float>(screenHeight) + 4.0f}, 0.0f, 4.0f, WHITE);
+            DrawTextureEx(heartSymbol, {screenWidth/2 - 78.0f + (50.0f * i), static_cast<float>(screenHeight) + 3.0f}, 0.0f, 4.0f, WHITE);
         }
+
+
         game.Draw();
 
-		
-        //DrawTextureEx(txture, { 100,100 }, 0, 4, WHITE);
-		
+            //DrawTextureEx(txture, { 100,100 }, 0, 4, WHITE);
+        DrawTextEx(spaceFont, ("SCORE:" + std::to_string(game.playerScore)).c_str(), {10,10}, 34, 2, BROWN);
 
 
 

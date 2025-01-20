@@ -8,16 +8,20 @@ Game::Game()
 	explosion = LoadTexture("textures/explosion2.png");
 	asteroids = InitAsteroids();
 	enemies = InitEnemies();
-	enemiesCourse = 2;
+	enemiesCourse = 1;
 	//wartosci domyslne
+	waveCounter = 0;
+	playerScore = 0;
 	lives = 3;
-	enemySpeed = 2;
+	enemySpeed = 1;
 	enemyDownSpeed = 4;
 	lastEnemyFire = 0.0;
 	lastUfo = 0.0;
 	std::uniform_int_distribution<> dist(10, 20);
 	ufoCooldown = dist(rng);
 	isGameRunning = true;
+	isImmune = false;
+	immunityTime = 0.0;
 }
 
 Game::~Game()
@@ -37,12 +41,16 @@ void Game::Draw()
 	for (auto& cp : cruiser.projectiles) cp.Draw();
 	for (auto& p : enemiesProjectiles) p.Draw();
 	ufo.Draw();
+	if (isImmune&&isGameRunning) DrawCircleV({cruiser.GetPosition().x + cruiser.GetTexture().width/2,cruiser.GetPosition().y + cruiser.GetTexture().height/2}, barrierRadius, barrierColor);
 }
 
 void Game::Update()
 {
 	if (isGameRunning) {
 		double currentTime = GetTime();
+		if (isImmune && (currentTime - immunityTime >= immunityDuration)) {
+			isImmune = false;
+		}
 		for (auto& cp : cruiser.projectiles) cp.Update();
 		for (int i = 0; i < cruiser.projectiles.size(); i++)
 		{
@@ -74,6 +82,13 @@ void Game::Update()
 		//OutOfScreen();
 		ufo.Update();
 		CollisionsCheck();
+
+		if (enemies.empty()) {
+			enemies = InitEnemies();
+			waveCounter++;
+			SetEnemiesSpeed(GetEnemiesSpeed() + 1); // zwiekszenie poziomu trudnosci przy kolejnych falach
+			if (waveCounter != 0 && waveCounter % 2 == 0) lives++;
+		}
 	}
 	else {
 		if (IsKeyPressed(KEY_ENTER)) {
@@ -152,10 +167,14 @@ void Game::InitGame()
 	lives = 3;
 	lastEnemyFire = 0.0;
 	lastUfo = 0.0;
+	playerScore = 0;
+	waveCounter = 0;
 	std::uniform_int_distribution<> dist(10, 20);
 	ufoCooldown = dist(rng);
 	isGameRunning = true;
 }
+
+
 
 //void Game::OutOfScreen() // usuwanie pocisków poza ekranem
 //{
@@ -204,10 +223,12 @@ void Game::CollisionsCheck()
 	// KOLIZJE PRZECIWNIKOW Z GRACZEM
 	for (auto& ep : enemiesProjectiles)
 	{
-		if (CheckCollisionRecs(ep.GetHitbox(), cruiser.GetHitbox())) // Kolizje strzalow wrogow z graczem
+		if (!isImmune && CheckCollisionRecs(ep.GetHitbox(), cruiser.GetHitbox())) // Kolizje strzalow wrogow z graczem
 		{
 			ep.shot = false;
 			lives--;
+			isImmune = true;
+			immunityTime = GetTime();
 			std::cout << "kolizja ze strzalem wroga" << std::endl;
 			if (lives == 0) DeathScreen();
 		}
@@ -251,6 +272,9 @@ void Game::CollisionsCheck()
 		{
 			if (CheckCollisionRecs(cp.GetHitbox(), i->GetHitbox()))
 			{
+				if (i->GetType() == 1) playerScore += 10;
+				if (i->GetType() == 2) playerScore += 20;
+				if (i->GetType() == 3) playerScore += 30;
 				DrawTextureV(explosion, {cp.GetHitbox().x-15,cp.GetHitbox().y}, WHITE);
 				i = enemies.erase(i);
 				//PlaySound(sound);
@@ -283,6 +307,7 @@ void Game::CollisionsCheck()
 			ufo.spawned = false;
 			//PlaySound(sound);
 			cp.shot = false;
+			playerScore += 100;
 		}
 	}
 
@@ -290,14 +315,16 @@ void Game::CollisionsCheck()
 
 void Game::EnemyFire()
 {
-	std::uniform_int_distribution<int> dist(0, GetSizeOfEnemies() - 1);
-    double currentTime = GetTime();
-    if (currentTime - lastEnemyFire >= enemyFireCooldown && enemies.size() > 0) {
-		int random = dist(rng);
-        Enemy& enemy = enemies[random];
-        enemiesProjectiles.push_back(Projectile({ enemy.GetPosition().x + enemy.textures[enemy.GetType() - 1].width / 2 - 3, enemy.GetPosition().y + enemy.textures[enemy.GetType() - 1].height }, 5, false));
-        lastEnemyFire = currentTime;
-    }
+	if (GetSizeOfEnemies() > 0) {
+		std::uniform_int_distribution<int> dist(0, GetSizeOfEnemies() - 1);
+		double currentTime = GetTime();
+		if (currentTime - lastEnemyFire >= enemyFireCooldown && enemies.size() > 0) {
+			int random = dist(rng);
+			Enemy& enemy = enemies[random];
+			enemiesProjectiles.push_back(Projectile({ enemy.GetPosition().x + enemy.textures[enemy.GetType() - 1].width / 2 - 3, enemy.GetPosition().y + enemy.textures[enemy.GetType() - 1].height }, 5, false));
+			lastEnemyFire = currentTime;
+		}
+	}
 }
 
 void Game::UpdateEnemies()
@@ -307,18 +334,13 @@ void Game::UpdateEnemies()
 		if (e.GetPosition().x + e.textures[e.GetType() - 1].width > GetScreenWidth())
 		{
 			enemiesCourse = -GetEnemiesSpeed(); // Zmiana kierunku
-			MoveDown();
+			for (auto& e : enemies) e.position.y += GetEnemiesDownSpeed();
 		}
 		if (e.GetPosition().x < 0) {
 			enemiesCourse = GetEnemiesSpeed();
-			MoveDown();
+			for (auto& e : enemies) e.position.y += GetEnemiesDownSpeed();
 		}
 
 		e.Update(enemiesCourse);
 	}
-}
-
-void Game::MoveDown()
-{
-	for (auto& e : enemies) e.position.y += GetEnemiesDownSpeed();
 }

@@ -19,6 +19,8 @@ public:
 	void SetLives(int lives);
 	int GetLives();
 	bool isGameRunning;
+	int playerScore;
+	int waveCounter;
 private:
 	Player cruiser;
 	int lives;
@@ -26,7 +28,6 @@ private:
 	void ClearObjects();
 	void InitGame();
 	Texture2D explosion;
-	//void OutOfScreen();
 	std::vector<Asteroid> asteroids;
 	std::vector<Asteroid> InitAsteroids();
 	std::vector<Enemy> enemies;
@@ -37,11 +38,15 @@ private:
 	constexpr static float enemyFireCooldown{ 0.5 };
 	float lastEnemyFire;
 	void UpdateEnemies();
-	void MoveDown();
 	int enemiesCourse;
 	int enemySpeed;
 	int enemyDownSpeed;
 	UFO ufo;
 	float ufoCooldown;
 	double lastUfo;
+	bool isImmune;
+	double immunityTime;
+	const double immunityDuration{ 2.0 };
+	const float barrierRadius = 50.0f;
+	const Color barrierColor = { 175,238,238,128 };
 };
