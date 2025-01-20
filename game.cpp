@@ -63,7 +63,7 @@ Game::Game()
 	enemyDownSpeed = 4;
 	lastEnemyFire = 0.0;
 	lastUfo = 0.0;
-	std::uniform_int_distribution<> dist(10, 20);
+	std::uniform_int_distribution<> dist(20, 30);
 	ufoCooldown = dist(rng);
 	isGameRunning = true;
 	isImmune = false;
@@ -126,7 +126,7 @@ void Game::Update()
 		{
 			ufo.SpawnUFO();
 			lastUfo = GetTime();
-			std::uniform_int_distribution<> dist(10, 20);
+			std::uniform_int_distribution<> dist(20, 25);
 			ufoCooldown = dist(rng);
 		}
 		EnemyFire();
@@ -229,7 +229,7 @@ void Game::InitGame()
 	lastUfo = 0.0;
 	playerScore = 0;
 	waveCounter = 0;
-	std::uniform_int_distribution<> dist(10, 20);
+	std::uniform_int_distribution<> dist(20, 25);
 	ufoCooldown = dist(rng);
 	isGameRunning = true;
 }

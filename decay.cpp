@@ -1,13 +1,11 @@
 #include "decay.h"
-
-Decay::Decay(Vector2 position)
+#include <random>
+Decay::Decay(Vector2 position) : position(position)
 {
-	this->position = position;
 }
 void Decay::Draw()
 {
-	//DrawRectangle(position.x, position.y, 4, 4, {255,0,0,255});
-	DrawRectangle(position.x, position.y, 4, 4, GRAY);
+	DrawRectangle(position.x, position.y, 4, 4, { 130,130,130,170 });
 }
 
 Rectangle Decay::GetHitbox()

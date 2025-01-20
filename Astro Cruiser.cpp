@@ -8,7 +8,14 @@
 enum GameState {
     MAIN_MENU,GAMEPLAY,CREDITS
 };
-
+std::vector<int> GetTopScores(int count) {
+    std::vector<int> scores = LoadScores();
+    std::sort(scores.rbegin(), scores.rend()); // Sort scores in descending order
+    if (scores.size() > count) {
+        scores.resize(count); // Keep only the top 'count' scores
+    }
+    return scores;
+}
 int main()
 {
 
@@ -28,6 +35,7 @@ int main()
     
     Game game;
     GameState gameState = MAIN_MENU;
+    std::vector<int> topScores = GetTopScores(10);
     while (!WindowShouldClose())
     {
         Vector2 mousePosition{ GetMousePosition() };
@@ -111,6 +119,11 @@ int main()
             startButton.Draw();
             exitButton.Draw();
             creditsButton.Draw();
+            // Display top 10 high scores
+            DrawTextEx(spaceFont, "TOP 10 HIGH SCORES", { 20.0, 420.0f }, 30.0f, 2.0f, YELLOW);
+            for (int i = 0; i < topScores.size(); i++) {
+                DrawTextEx(spaceFont, ("* "+std::to_string(topScores[i])).c_str(), {80.0, 450.0f + i * 30.0f}, 30.0f, 2.0f, WHITE);
+            }
             EndDrawing();
             break;
         case CREDITS:
@@ -119,7 +132,11 @@ int main()
             DrawTextEx(spaceFont, "CREDITS", { screenWidth / 2 - 160, 100 }, 50, 2, YELLOW);
             DrawTextEx(spaceFont, "Game developed by Maciej Kucharski", { 50, 200 }, 30, 2, WHITE);
             DrawTextEx(spaceFont, "Font ''Space Madness'' by Rose Frye", { 50, 250 }, 30, 2, WHITE);
-            DrawTextEx(spaceFont, "Mental support : Michal Gorka", { 50, 300 }, 30, 2, WHITE);
+            DrawTextEx(spaceFont, "Mental support: Michal Gorka", { 50, 300 }, 30, 2, WHITE);
+            DrawTextEx(spaceFont, "Space Music Pack by Goose Ninja", { 50, 350 }, 30, 2, WHITE);
+            DrawTextEx(spaceFont, "Background: SPACE by SPACE", { 50, 400 }, 30, 2, WHITE);
+            DrawTextEx(spaceFont, "Enemy and ship texture: Space Eaters! Asset Pack by Cluly", { 50, 450 }, 30, 2, WHITE);
+            DrawTextEx(spaceFont, "Sound effects and other textures by Maciej Kucharski", { 50, 500 }, 30, 2, WHITE);
             if (returnButton.isPressed(mousePosition, mousePressed))gameState = MAIN_MENU;
             returnButton.Draw();
             EndDrawing();
