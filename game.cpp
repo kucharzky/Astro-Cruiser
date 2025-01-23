@@ -44,11 +44,11 @@ std::mt19937 rng(std::random_device{}());
 Game::Game()
 {
 	mainMenuMusic = LoadMusicStream("sounds/main_menu_music.wav");
-	SetMusicVolume(mainMenuMusic, 0.1);
+	SetMusicVolume(mainMenuMusic, 0.03);
 	gameplayMusic = LoadMusicStream("sounds/gameplay.wav");
-	SetMusicVolume(gameplayMusic, 0.1);
+	SetMusicVolume(gameplayMusic, 0.03);
 	explosionSound = LoadSound("sounds/destroy.wav");
-	SetSoundVolume(explosionSound, 0.1);
+	SetSoundVolume(explosionSound, 0.08);
 	PlayMusicStream(mainMenuMusic);
 	PlayMusicStream(gameplayMusic);
 	explosion = LoadTexture("textures/explosion2.png");
@@ -171,10 +171,6 @@ int Game::GetEnemiesSpeed()
 	return enemySpeed;
 }
 
-void Game::SetEnemiesDownSpeed(int speed)
-{
-	this->enemyDownSpeed = speed;
-}
 
 int Game::GetEnemiesDownSpeed()
 {
@@ -203,12 +199,9 @@ void Game::TogglePause()
 
 void Game::DeathScreen()
 {
-	SaveScore(playerScore); // Save the current score
-	int highScore = GetHighScore(); // Get the high score
+	SaveScore(playerScore); // zapis aktualnego wyniku
+	int highScore = GetHighScore(); // wczytanie high score
 	isGameRunning = false;
-	// tutaj bedzie ekran smierci
-	std::cout << "Game Over! Your score: " << playerScore << std::endl;
-	std::cout << "High Score: " << highScore << std::endl;
 }
 
 void Game::ClearObjects()

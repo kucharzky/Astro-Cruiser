@@ -24,7 +24,6 @@ public:
 	void Inputs();
 	void SetEnemiesSpeed(int speed);
 	int GetEnemiesSpeed();
-	void SetEnemiesDownSpeed(int speed);
 	int GetEnemiesDownSpeed();
 	size_t GetSizeOfEnemies();
 	void SetLives(int lives);

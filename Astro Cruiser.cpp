@@ -5,14 +5,16 @@
 #include "game.h"
 #include <string>
 
+// stany gry
+// do przechodzenia miedzy menu glownym, rozgrywka a creditsami
 enum GameState {
     MAIN_MENU,GAMEPLAY,CREDITS
 };
 std::vector<int> GetTopScores(int count) {
     std::vector<int> scores = LoadScores();
-    std::sort(scores.rbegin(), scores.rend()); // Sort scores in descending order
+    std::sort(scores.rbegin(), scores.rend()); // sortowanie w od najwyzszego
     if (scores.size() > count) {
-        scores.resize(count); // Keep only the top 'count' scores
+        scores.resize(count); // zatrzymuje tylko najlepsze wyniki
     }
     return scores;
 }
@@ -20,6 +22,7 @@ int main()
 {
 
     int offset = 50;
+    // inicjalizacja okienka o wielkosci 1280 x 720 + 50
     InitWindow(screenWidth, screenHeight+offset, "Astro Cruiser : rev 0.2");
     Font spaceFont = LoadFontEx("textures/SpaceMadness.ttf", 64, 0, 0);
     Texture2D heartSymbol = LoadTexture("textures/heart.png");
@@ -39,35 +42,18 @@ int main()
     while (!WindowShouldClose())
     {
         Vector2 mousePosition{ GetMousePosition() };
-        bool mousePressed{ IsMouseButtonPressed(MOUSE_BUTTON_LEFT) };
-        
-		
-        /*if (startButton.isPressed(mousePosition, mousePressed))
-        {
-            UnloadTexture(background);
-            startButton.~Button();
-            exitButton.~Button();
+        // sprawdzanie nacisniecia przycisku myszy
+        // do sprawdzania nacisniec przyskow w menu glownym
+        bool mousePressed{ IsMouseButtonPressed(MOUSE_BUTTON_LEFT) }; 
 
-        }
-        else if (exitButton.isPressed(mousePosition, mousePressed))
-        {
-            break;
-        }
-        else
-        {
-            DrawTexture(background, 0, 0, WHITE);
-            startButton.Draw();
-            exitButton.Draw();
-        }*/
-		// Eventy
         switch (gameState) {
         case GAMEPLAY:
-            UpdateMusicStream(game.gameplayMusic);
+            UpdateMusicStream(game.gameplayMusic); // muzyka w trakcie rozgrywki
             game.Inputs();
             game.Update();
             BeginDrawing();
             ClearBackground(BLACK);
-            // Draw gameplay background
+            // rysowanie tla
             for (int y = 0; y < screenHeight + offset; y += gameplayBackground.height) {
                 for (int x = 0; x < screenWidth; x += gameplayBackground.width) {
                     DrawTexture(gameplayBackground, x, y, WHITE);
@@ -96,30 +82,32 @@ int main()
             EndDrawing();
             break;
         case MAIN_MENU:
+            // warunki wcisniecia przysikow w menu glownym
             if (startButton.isPressed(mousePosition, mousePressed)) {
-                gameState = GAMEPLAY;
+                gameState = GAMEPLAY; // przysik start -> wlaczenie gry
             }
             else if (exitButton.isPressed(mousePosition, mousePressed)) {
-                CloseWindow();
+                CloseWindow(); // exit -> wyjscie z gry
                 return 0;
             }
             else if (creditsButton.isPressed(mousePosition, mousePressed)) {
-                gameState = CREDITS;
+                gameState = CREDITS; // credits -> przejscie do creditsow
             }
-            UpdateMusicStream(game.mainMenuMusic);
+            UpdateMusicStream(game.mainMenuMusic); // muzyka w menu glownym
             BeginDrawing();
             ClearBackground(BLACK);
-            // Draw menu background
+            // rysowanie tla
             for (int y = 0; y < screenHeight + offset; y += menuBackground.height) {
                 for (int x = 0; x < screenWidth; x += menuBackground.width) {
                     DrawTexture(menuBackground, x, y, {255,255,255,80});
                 }
             }
             DrawTexture(mainLogo, screenWidth / 2 - mainLogo.width / 2, 50, WHITE);
+            // rysowanie przyciskow
             startButton.Draw();
             exitButton.Draw();
             creditsButton.Draw();
-            // Display top 10 high scores
+            // wyswietalnie top 10
             DrawTextEx(spaceFont, "TOP 10 HIGH SCORES", { 20.0, 420.0f }, 30.0f, 2.0f, YELLOW);
             for (int i = 0; i < topScores.size(); i++) {
                 DrawTextEx(spaceFont, ("* "+std::to_string(topScores[i])).c_str(), {80.0, 450.0f + i * 30.0f}, 30.0f, 2.0f, WHITE);
