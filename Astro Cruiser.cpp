@@ -23,7 +23,7 @@ int main()
 
     int offset = 50;
     // inicjalizacja okienka o wielkosci 1280 x 720 + 50
-    InitWindow(screenWidth, screenHeight+offset, "Astro Cruiser : rev 0.2");
+    InitWindow(screenWidth, screenHeight+offset, "Astro Cruiser : rev 0.4");
     Font spaceFont = LoadFontEx("textures/SpaceMadness.ttf", 64, 0, 0);
     Texture2D heartSymbol = LoadTexture("textures/heart.png");
     Texture2D mainLogo = LoadTexture("textures/mainlogo.png");
