@@ -2,8 +2,7 @@
 //
 
 #include "Astro Cruiser.h"
-#include "game.h"
-#include <string>
+
 
 // stany gry
 // do przechodzenia miedzy menu glownym, rozgrywka a creditsami

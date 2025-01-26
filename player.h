@@ -2,6 +2,13 @@
 #include <raylib.h>
 #include "projectile.h"
 #include <vector>
+/// <>
+/// Klasa Player - obiekt gracza, odpowiada za sterowanie, wystrzeliwywanie pociskow
+/// GetHitbox(),GetPosition(),UnloadResources(),Draw() - analogicznie jak w ufo.h
+/// MoveL() - przesuwa gracza o dana wartosc pikseli w lewo
+/// MoveR() - przesuwa obiekt gracza w prawo
+/// Fire() - cooldown na strzelanie, dodanie pocisku do wektora, wlaczenie dzwieku
+/// </>
 class Player
 {
 public:

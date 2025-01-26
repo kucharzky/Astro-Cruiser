@@ -1,5 +1,5 @@
 #include "decay.h"
-#include <random>
+
 Decay::Decay(Vector2 position) : position(position)
 {
 }

@@ -1,6 +1,11 @@
 #pragma once
 #include <raylib.h>
-
+/// <>
+/// Klasa Enemy - reprezentuje przeciwnikow do ktorych strzelamy i za ktore dostajemy punkty
+/// Konstruktor - specyfikacja typu przeciwnika oraz pozycji w ktorej zostanie przywolany
+/// KillEnemy() - rozladowanie tekstur dla wszystkich przeciwnikow
+/// GetType() - zwraca typ przeciwnika którego przywolalismy - inna tekstura inna punktacja dla roznych przeciwnikow
+/// </>
 class Enemy 
 {
 public:
