@@ -1,4 +1,8 @@
-# Astro Cruiser
+# Astro Cruiser - gra komputerowa inspirowana Space Invaders
+
+### Projekt stworzony specjalnie na zajęcia Języki Programowania Obiektowego prowadzony na uczelni AGH
+#### prowadzący zajęcia: prof. dr hab. inż. Bogusław Cyganek
+
 Kroki wykonywania:
 1. stworzenie pętli gry i głownej
 2. stworzenie podstaw gry
