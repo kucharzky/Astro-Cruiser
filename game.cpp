@@ -282,7 +282,6 @@ void Game::CollisionsCheck()
 			lives--;
 			isImmune = true;
 			immunityTime = GetTime();
-			std::cout << "kolizja ze strzalem wroga" << std::endl;
 			if (lives == 0) DeathScreen();
 		}
 		for (auto& a : asteroids) // Kolizje strzalow z asteroidami
@@ -314,7 +313,6 @@ void Game::CollisionsCheck()
 		if (CheckCollisionRecs(e.GetHitbox(), cruiser.GetHitbox())) // Kolizje przeciwnikow z graczem
 		{
 			DeathScreen();
-			std::cout << "bezposrednia kolizja z wrogiem" << std::endl;
 		}
 	}
 	// KOLIZJE GRACZA Z PRZECIWNIKAMI

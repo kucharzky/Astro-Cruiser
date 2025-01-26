@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
-#include "player.h"
-#include "projectile.h"
-#include "enemy.h"
-#include "asteroid.h"
-#include "ufo.h"
+//#include "player.h"
+//#include "projectile.h"
+//#include "enemy.h"
+//#include "asteroid.h"
+//#include "ufo.h"
 #include "game.h"
+#include <raylib.h>
 
 //////////////////////////
 // TESTY GRACZA
@@ -78,10 +79,10 @@ TEST(ProjectileTest, ProjectileUpdate) {
     Projectile enemyProjectile(initialPos, speed, false);
 
     playerProjectile.Update();
-    EXPECT_LT(playerProjectile.GetHitbox().y, initialPos.y); // Pocisk gracza leci w górê
+    EXPECT_LT(playerProjectile.GetHitbox().y, initialPos.y); // Pocisk gracza leci w góre
 
     enemyProjectile.Update();
-    EXPECT_GT(enemyProjectile.GetHitbox().y, initialPos.y); // Pocisk wroga leci w dó³
+    EXPECT_GT(enemyProjectile.GetHitbox().y, initialPos.y); // Pocisk wroga leci w dól
 }
 
 //////////////////////////
@@ -138,4 +139,8 @@ TEST(UFOTest, UfoUpdate) {
     else {
         EXPECT_LT(ufo.GetPosition().x, initialPosition.x);
     }
+}
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
