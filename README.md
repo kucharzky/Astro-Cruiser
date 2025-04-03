@@ -1,22 +1,54 @@
-# Astro Cruiser - gra komputerowa inspirowana Space Invaders
+# Astro-Cruiser 🚀
 
-### Projekt stworzony specjalnie na zajęcia Języki Programowania Obiektowego prowadzony na uczelni AGH
-#### prowadzący zajęcia: prof. dr hab. inż. Bogusław Cyganek
+*A 2D space shooter game made with Raylib*
 
-Kroki wykonywania:
-1. stworzenie pętli gry i głownej
-2. stworzenie podstaw gry
-3. utowrzenie statku któym możemy sterować
-4. funkcjonalność strzelania statku oraz przeciwników
-5. dodanie wrogów
-6. dodanie utrudnień typu skały
-7. sprawdzanie kolizji
-8. death screen
-9. punktacja oraz najwyższy wynik
-10. tablica wynikow
+## 🎮 About the Game
+Astro-Cruiser is a 2D space shooter where you pilot a spaceship, battle enemies, and hide behind asteroid fields to avoid enemy fire. The game is built using the [Raylib](https://www.raylib.com/) library, providing smooth graphics and gameplay.
 
-Czcionka:
-"Space Madness" by Rose Frye
-Licensed under Creative Commons: By Attribution 4.0 International
-http://creativecommons.org/licenses/by/4.0/
-Źródło: https://modernmodron.itch.io/space-madness
+## 🛠 Features
+- 🚀 **Arcade-style gameplay** with increasing difficulty.
+- 🛸 **Enemy waves**.
+- 🎶 **Retro-inspired soundtrack and sound effects**.
+- 🎨 **Pixel-art graphics** with a space theme.
+
+## 📦 Installation & Running the Game
+### Prerequisites
+- C compiler (e.g., `gcc`, `clang`)
+- [Raylib](https://www.raylib.com/) installed on your system
+
+### Clone the repository
+```sh
+git clone https://github.com/kucharzky/Astro-Cruiser.git
+cd Astro-Cruiser
+```
+
+### Build and run (Linux/macOS)
+```sh
+make
+./astro_cruiser
+```
+
+### Build and run (Windows)
+You can use MinGW:
+```sh
+mingw32-make
+astro_cruiser.exe
+```
+
+## 🎮 Controls
+- **Arrow keys** – Move the spaceship
+- **Spacebar** – Fire weapon
+- **P** – Pause/Quit
+
+## 🤝 Contributing
+Contributions are welcome! Feel free to fork the repo, create a branch, and submit a pull request.
+
+## ⭐ Acknowledgments
+- [Raylib](https://www.raylib.com/) - Simple and powerful C game framework.
+- Open-source contributors and pixel artists for inspiration!
+
+
+FONT: "Space Madness" by Rose Frye Licensed under Creative Commons: By Attribution 4.0 International http://creativecommons.org/licenses/by/4.0/ Źródło: https://modernmodron.itch.io/space-madness
+---
+
+🚀 **Have fun playing Astro-Cruiser!** 🚀
